@@ -4,34 +4,25 @@ import AjouterEC from "./AjouterEC";
 import { Stack } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import Snackbar from '@mui/material/Snackbar';
 import ModifierEC from "./ModifierEC";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 function ECListe(){
     const [ecListe, setEcListe] = useState([])
     const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
+    const fetchEcData = () => {
+      fetch("http://localhost:8084/maquette/ec")
+        .then(response => response.json())
+        .then(data => setEcListe(data))
+        .catch(err => console.error(err));
+    }
 
     useEffect(() => {
-        fetch("http://localhost:8084/maquette/ec")
-          .then(response => response.json())
-          .then(data => setEcListe(data));
-      }, []);
+      fetchEcData();
+    }, []);
 
-      const updateEC = (ecListe, link) => {
-        fetch( link, {
-          method :"PUT",
-          headers : {"content-Type" : "application/json"},
-          body : JSON.stringify(ecListe),
-        })
-        .then(response => {
-          if (response.ok) {
-            fetchEC();
-          } else {
-            alert("Quelque chose ne va pas");
-          }
-        })
-        .catch(err => console.error(err));
-      }
+     
 
       const onDelClick = id => {
         if (window.confirm("Êtes-vous sûr de supprimer?")) {
@@ -51,6 +42,7 @@ function ECListe(){
           .catch(err => console.error(err));
         }
       };
+      
     
     const columns = [
       { field: 'libelle', headerName: 'Libellé', flex: 1},
@@ -62,53 +54,72 @@ function ECListe(){
       { field: 'coefficient', headerName: 'coefficient', flex: 1},
       { field: 'description', headerName: 'description', flex: 1},
       {
-        field : "_links.ue.href",
-          headerName : "Modifier",
-          renderCell : row => (
-            <IconButton
-              variant="contained"
-              color="primary"
-              onClick={() => <ModifierEC data={row} updateEC={updateEC} />}
-            > 
-            <EditIcon/>
-            </IconButton>
-          )
-      }, 
-      {
-        field : "_links.self.href",
-          headerName : "supprimer",
-          renderCell : row => (
-            <IconButton
-              onClick={() => onDelClick(row.id)}
-              variant="contained"
-            >
-            <DeleteIcon color="error"/>
-            </IconButton>
-          )
+        field: "_links.ue.href",
+        headerName: "MODIFIER",
+        renderCell: row => (
+          <ModifierEC data={row} updateEC={updateEC} />
+        ),
       },
+      {
+        field: "_links.self.href",
+        headerName: "SUPPRIMER",
+        renderCell: row => (
+          <IconButton
+            onClick={() => onDelClick(row.id)}
+            variant="contained"
+          >
+            <DeleteIcon color="error" />
+          </IconButton>
+        ),
+      },
+       {
+         field: 'details',
+         headerName: 'DETAILS',
+         flex: 1,
+         renderCell: () => (
+           <Link to="/modules">
+             <Button>Voir Détails</Button>
+           </Link>
+         ),
+       },
     ]
-    const fetchEC = () => {
-      fetch("http://localhost:8084/maquette/ec")
-        .then(response => response.json())
-        .then(data => setEcListe(data))
-        .catch(err => console.error(err));
-    } 
-    const ajouterEC = ecListe => {
+    
+    const ajouterEC = (ecListe) => {
       fetch("http://localhost:8084/maquette/ec", {
         method: "POST",
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(ecListe),
       })
-      .then(response => {
-        if (response.ok) {
-          fetchEC();
-        } else {
-            alert("Quelque chose ne va pas");
-        }
-      })
-      .catch(err => console.error(err));
+        .then(response => {
+          if (response.ok) {
+            fetchEcData();
+          } else {
+            console.error("Quelque chose ne va pas lors de l'ajout.");
+          }
+        })
+        .catch(err => console.error(err));
     }
     
+    const updateEC = (ecListe, id) => {
+      const url = `http://localhost:8084/maquette/ec/${id}`;
+      
+      fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ecListe),
+      })
+        .then(response => {
+          if (response.ok) {
+            fetchEcData();
+          } else {
+            console.error("Quelque chose ne va pas lors de la mise à jour.");
+          }
+        })
+        .catch(err => console.error(err));
+  }
+  
     return (
       <>
         <Stack mt={2} mb={2}>

@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uasz.demo.Modele.Maquette.EC;
-import com.uasz.demo.Modele.Maquette.UE;
 import com.uasz.demo.Service.Maquette.ECService;
-import com.uasz.demo.Service.Maquette.UEService;
 
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
@@ -30,19 +28,24 @@ public class ECController {
         return ecService.afficherToutEC();
     }
 
-    // @PostMapping(path = "/ec")
-    // public EC ajouter_ec(@RequestBody EC ec){
-    //     return ecService.ajouterEC(ec);
-    // }
+    @GetMapping(path = "/ec/{id}")
+    public EC rechercher_ec(@PathVariable Long id){
+        return ecService.rechercherEC(id);
+    }
 
-    // @PutMapping(path = "/ec/{id}")
-    // public UE modifier_ec(@RequestBody EC ec){
-    //     return ecService.modifierEC(ec);
-    // }
+    @PostMapping(path = "/ec")
+    public EC ajouter_ec(@RequestBody EC ec){
+        return ecService.ajouterEC(ec);
+    }
+
+    @PutMapping(path = "/ec/{id}")
+    public EC modifier_ec(@RequestBody EC ec,@PathVariable Long id){
+        return ecService.modifierEC(ec,id);
+    }
 
     @DeleteMapping(path = "/ec/{id}")
-    public void supprimer_ec( EC ec){
-         ecService.supprimerEC(ec);
+    public void supprimer_ec(@PathVariable Long id){
+         ecService.supprimerEC(id);;
     }
     
 }

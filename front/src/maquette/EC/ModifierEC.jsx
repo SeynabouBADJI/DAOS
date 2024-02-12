@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import { Dialog,DialogActions, DialogTitle, DialogContent, Button, TextField } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+
 function ModifierEC(props){
 
   const [open, setOpen] = useState(false)
@@ -49,7 +51,7 @@ function ModifierEC(props){
   
   return (
     <div>
-      <Button onClick = {handleClickOpen}>Modifier EC</Button>
+      <Button onClick = {handleClickOpen}><EditIcon/></Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Modifier EC</DialogTitle>
         <DialogContent>

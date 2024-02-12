@@ -11,7 +11,6 @@ import {
 function AjouterEC(props) {
   const [open, setOpen] = useState(false);
 
-  // Initialisation de l'état initial pour ue
   const initialEcState = {
     libelle : "",
     code : "",
@@ -118,6 +117,7 @@ function AjouterEC(props) {
                 value={ecListe.description}
                 onChange={handleChange}
                 /><br/>
+                
 
 
         </DialogContent>

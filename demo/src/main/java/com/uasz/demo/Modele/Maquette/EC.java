@@ -11,6 +11,7 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class EC {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +27,5 @@ public class EC {
     @ManyToOne
     private UE ue;
     @OneToMany(mappedBy = "ec")
-    private Collection<Module> modules;
+    private Collection<Modules> modules;
 }

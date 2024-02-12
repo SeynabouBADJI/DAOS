@@ -23,6 +23,6 @@ public class UE {
     @OneToMany( mappedBy = "ue")
     private Collection<EC> ecs;
     @OneToMany(mappedBy = "ue")
-    private Collection<Module> modules;
+    private Collection<Modules> modules;
 
 }

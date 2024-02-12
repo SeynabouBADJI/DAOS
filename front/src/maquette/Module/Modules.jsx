@@ -3,43 +3,42 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button, IconButton, Snackbar, Stack } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router-dom';
-import AjouterUE from "./AjouterUE";
-import ModifierUE from './ModifierUE';
-
-function UE() {
-  const [ue, setUe] = useState([]);
+import AjouterModules from "./AjouterModules";
+import ModifierModules from "./ModifierModules";
+function Modules() {
+  const [modules, setModules] = useState([]);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
 
   useEffect(() => {
-    fetchUeData();
+    fetchModules();
   }, []);
 
-  const fetchUeData = () => {
-    fetch("http://localhost:8084/maquette/ue")
+  const fetchModules = () => {
+    fetch("http://localhost:8084/maquette/modules")
       .then(response => response.json())
-      .then(data => setUe(data))
+      .then(data => setModules(data))
       .catch(err => console.error(err));
   }
   
   
 
-  const updateUE = (ue, id) => {
-    const url = `http://localhost:8084/maquette/ue/${id}`;
+  const updateModules = (modules, id) => {
+    const url = `http://localhost:8084/maquette/modules/${id}`;
     
     fetch(url, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ue),
+      body: JSON.stringify(modules),
     })
       .then(response => {
         if (response.ok) {
-          fetchUeData();
+          fetchModules();
         } else {
           console.error("Quelque chose ne va pas lors de la mise à jour.");
         }
       })
       .catch(err => console.error(err));
-}
+    }
 
 
    const handleDeleteSnackbarClose = () => {
@@ -48,11 +47,11 @@ function UE() {
 
   const onDelClick = id => {
     if (window.confirm("Êtes-vous sûr de supprimer?")) {
-      const url = `http://localhost:8084/maquette/ue/${id}`;
+      const url = `http://localhost:8084/maquette/modules/${id}`;
       fetch(url, { method: "DELETE" })
         .then(response => {
           if (response.ok) {
-            fetchUeData();
+            fetchModules();
             setDeleteSnackbarOpen(true);
           } else {
             console.error("La suppression a échoué.");
@@ -65,14 +64,14 @@ function UE() {
   const columns = [
     { field: 'libelle', headerName: 'LIBELLE', flex: 1 },
     { field: 'code', headerName: 'CODE', flex: 1 },
-    { field: 'description', headerName: 'DESCRIPTION', flex: 2 },
+    { field: 'description', headerName: 'DESCRIPTION', flex: 1 },
     { field: 'coefficient', headerName: 'COEFFICIENT', flex: 1 },
     { field: 'credit', headerName: 'CREDIT', flex: 1 },
     {
-      field: "_links.ue.href",
+      field: "_links.modules.href",
       headerName: "MODIFIER",
       renderCell: row => (
-        <ModifierUE data={row} updateUE={updateUE} />
+        <ModifierModules data={row} updateModules={updateModules} />
       ),
     },
     {
@@ -87,29 +86,20 @@ function UE() {
         </IconButton>
       ),
     },
-    {
-      field: 'details',
-      headerName: 'DETAILS',
-      flex: 1,
-      renderCell: () => (
-        <Link to="/ec-liste">
-          <Button>Voir Détails</Button>
-        </Link>
-      ),
-    },
+    
   ];
 
-  const ajouterUE = (ue) => {
-    fetch("http://localhost:8084/maquette/ue", {
+  const ajouterModules = (modules) => {
+    fetch("http://localhost:8084/maquette/modules", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(ue),
+      body: JSON.stringify(modules),
     })
       .then(response => {
         if (response.ok) {
-          fetchUeData();
+          fetchModules();
         } else {
           console.error("Quelque chose ne va pas lors de l'ajout.");
         }
@@ -120,11 +110,11 @@ function UE() {
   return (
     <>
       <Stack mt={2} mb={2}>
-        <AjouterUE ajouterUE={ajouterUE} />
+        <AjouterModules ajouterModules={ajouterModules} />
       </Stack>
       <div style={{ height: 600, width: '100%' }}>
         <DataGrid
-          rows={ue}
+          rows={modules}
           columns={columns}
           pageSize={5}
           disableRowSelectionOnClick={true}
@@ -140,4 +130,4 @@ function UE() {
   );
 }
 
-export default UE;
+export default Modules;
